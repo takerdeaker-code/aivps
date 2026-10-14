@@ -1,0 +1,6 @@
+{
+  "name": "Gemma VPS Shield AI",
+  "description": "Secure Web AI dashboard for gemma-4-E2B-abliterated GGUF with encrypted session files, custom system prompts, and conversational memory.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

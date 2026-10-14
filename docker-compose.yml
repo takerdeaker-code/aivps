@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Llama.cpp inference server running gemma-4-E2B-abliterated-btx-Q8_0.gguf
+  gemma-llama-server:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    container_name: gemma-4-server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./models:/models
+    command: >
+      -m /models/gemma-4-E2B-abliterated-btx-Q8_0.gguf
+      --host 0.0.0.0
+      --port 8080
+      -c 8192
+      -ngl 99
+
+  # Web Application with AES-256-GCM Session Vault
+  shield-web-app:
+    image: node:20-alpine
+    container_name: gemma-shield-web
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - ./data/sessions:/app/data/sessions
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - SESSION_MASTER_KEY=gemma_shield_master_key_secure_2026
+    command: sh -c "npm install && npm run build && npm start"
+    depends_on:
+      - gemma-llama-server
